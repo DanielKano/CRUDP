@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Básico</title>
+    <script>
+        async function agregarUsuario() {
+            const nombre = document.getElementById("nombre").value;
+            if (!nombre) {
+                alert("Ingresa un nombre");
+                return;
+            }
+
+            const respuesta = await fetch("/add", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ nombre })
+            });
+
+            if (respuesta.ok) {
+                alert("Usuario agregado");
+                cargarUsuarios();
+            } else {
+                alert("Error al agregar usuario");
+            }
+        }
+
+        async function cargarUsuarios() {
+            const respuesta = await fetch("/users");
+            const usuarios = await respuesta.json();
+            const tabla = document.getElementById("tabla-usuarios");
+            tabla.innerHTML = "<tr><th>ID</th><th>Nombre</th></tr>";
+
+            usuarios.forEach(([id, nombre]) => {
+                const fila = `<tr><td>${id}</td><td>${nombre}</td></tr>`;
+                tabla.innerHTML += fila;
+            });
+        }
+
+        window.onload = cargarUsuarios;
+    </script>
+</head>
+<body>
+    <h1>CRUD en Flask</h1>
+    <input type="text" id="nombre" placeholder="Nombre">
+    <button onclick="agregarUsuario()">Agregar</button>
+    
+    <h2>Usuarios Registrados</h2>
+    <table border="1" id="tabla-usuarios">
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+        </tr>
+    </table>
+</body>
+</html>
