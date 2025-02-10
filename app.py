@@ -2,11 +2,15 @@ from flask import Flask, request, jsonify, render_template
 import psycopg2
 import os
 
-DATABASE_URL = os.environ.get("postgresql://usuarios_zdqm_user:dL2v72UjL3tuLyzN3BQDRUlaTAbu4oLp@dpg-cul0dg2n91rc73b0v260-a/usuarios_zdqm")  # Render define esta variable automáticamente
+app = Flask(__name__)  # 🔹 Definiendo Flask correctamente
+
+# Obtener la URL de la base de datos desde las variables de entorno
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
 def get_db_connection():
     return psycopg2.connect(DATABASE_URL, sslmode="require")
 
+# Inicializar base de datos
 def init_db():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -20,6 +24,12 @@ def init_db():
     cursor.close()
     conn.close()
 
+init_db()  # 🔹 Llamamos a la función para inicializar la base de datos
+
+# Página principal
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 # API para agregar usuario
 @app.route('/add', methods=['POST'])
@@ -37,7 +47,6 @@ def add_user():
 
     return jsonify({"message": f"Usuario {nombre} agregado"}), 201
 
-
 # API para obtener usuarios
 @app.route('/users', methods=['GET'])
 def get_users():
@@ -50,7 +59,6 @@ def get_users():
 
     return jsonify(users)
 
-
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))  # Render asigna un puerto automáticamente
+    port = int(os.environ.get("PORT", 10000))  # Render asigna el puerto automáticamente
     app.run(host="0.0.0.0", port=port)
