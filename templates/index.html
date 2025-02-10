@@ -3,25 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRUD Logística de Envíos</title>
+    <title>CRUD de Logística</title>
     <script>
         async function agregarEnvio() {
             const nombre = document.getElementById("nombre").value;
             const direccion = document.getElementById("direccion").value;
             const estado = document.getElementById("estado").value;
             const descripcion = document.getElementById("descripcion").value;
-            
+
             if (!nombre || !direccion || !estado || !descripcion) {
                 alert("Todos los campos son obligatorios");
                 return;
             }
-            
+
             const respuesta = await fetch("/add", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ nombre, direccion, estado, descripcion })
             });
-            
+
             if (respuesta.ok) {
                 alert("Envío agregado");
                 cargarEnvios();
@@ -39,53 +39,28 @@
             envios.forEach(([id, nombre, direccion, estado, descripcion]) => {
                 const fila = `<tr>
                     <td>${id}</td>
-                    <td>${nombre}</td>
-                    <td>${direccion}</td>
-                    <td>${estado}</td>
-                    <td>${descripcion}</td>
-                    <td>
-                        <button onclick="editarEnvio(${id})">Editar</button>
-                        <button onclick="eliminarEnvio(${id})">Eliminar</button>
-                    </td>
+                    <td contenteditable='true' onBlur='editarEnvio(${id}, "nombre", this.innerText)'>${nombre}</td>
+                    <td contenteditable='true' onBlur='editarEnvio(${id}, "direccion", this.innerText)'>${direccion}</td>
+                    <td contenteditable='true' onBlur='editarEnvio(${id}, "estado", this.innerText)'>${estado}</td>
+                    <td contenteditable='true' onBlur='editarEnvio(${id}, "descripcion", this.innerText)'>${descripcion}</td>
+                    <td><button onclick='eliminarEnvio(${id})'>Eliminar</button></td>
                 </tr>`;
                 tabla.innerHTML += fila;
             });
         }
 
-        async function editarEnvio(id) {
-            const nuevoNombre = prompt("Nuevo nombre:");
-            const nuevaDireccion = prompt("Nueva dirección:");
-            const nuevoEstado = prompt("Nuevo estado:");
-            const nuevaDescripcion = prompt("Nueva descripción:");
-
-            if (!nuevoNombre || !nuevaDireccion || !nuevoEstado || !nuevaDescripcion) {
-                alert("Todos los campos son obligatorios");
-                return;
-            }
-
-            const respuesta = await fetch(`/update/${id}`, {
+        async function editarEnvio(id, columna, valor) {
+            await fetch("/edit", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ nombre: nuevoNombre, direccion: nuevaDireccion, estado: nuevoEstado, descripcion: nuevaDescripcion })
+                body: JSON.stringify({ id, columna, valor })
             });
-
-            if (respuesta.ok) {
-                alert("Envío actualizado");
-                cargarEnvios();
-            } else {
-                alert("Error al actualizar el envío");
-            }
         }
 
         async function eliminarEnvio(id) {
-            if (!confirm("¿Estás seguro de eliminar este envío?")) return;
-            const respuesta = await fetch(`/delete/${id}`, { method: "DELETE" });
-            
-            if (respuesta.ok) {
-                alert("Envío eliminado");
+            if (confirm("¿Seguro que deseas eliminar este envío?")) {
+                await fetch(`/delete/${id}`, { method: "DELETE" });
                 cargarEnvios();
-            } else {
-                alert("Error al eliminar el envío");
             }
         }
 
@@ -93,12 +68,12 @@
     </script>
 </head>
 <body>
-    <h1>CRUD Logística de Envíos</h1>
+    <h1>CRUD de Logística de Envíos</h1>
     <input type="text" id="nombre" placeholder="Nombre">
     <input type="text" id="direccion" placeholder="Dirección">
     <input type="text" id="estado" placeholder="Estado">
     <input type="text" id="descripcion" placeholder="Descripción">
-    <button onclick="agregarEnvio()">Agregar</button>
+    <button onclick="agregarEnvio()">Agregar Envío</button>
     
     <h2>Envíos Registrados</h2>
     <table border="1" id="tabla-envios">
