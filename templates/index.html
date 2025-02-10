@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +11,7 @@
             const direccion = document.getElementById("direccion").value;
             const estado = document.getElementById("estado").value;
             const descripcion = document.getElementById("descripcion").value;
-            
+
             if (!nombre || !direccion || !estado || !descripcion) {
                 alert("Todos los campos son obligatorios");
                 return;
@@ -49,13 +50,19 @@
             });
         }
 
-        async function actualizarEnvio(id, campo, valor) {
+        async function actualizarEnvio(id, columna, valor) {
+            const datos = { [columna]: valor };
+
             const respuesta = await fetch(`/update/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ campo, valor })
+                body: JSON.stringify(datos)
             });
-            if (!respuesta.ok) {
+
+            if (respuesta.ok) {
+                alert("Envío actualizado correctamente");
+                cargarUsuarios();  // Recargar la tabla
+            } else {
                 alert("Error al actualizar");
             }
         }
@@ -74,6 +81,7 @@
         window.onload = cargarEnvios;
     </script>
 </head>
+
 <body>
     <h1>CRUD Logística de Envíos</h1>
     <input type="text" id="nombre" placeholder="Nombre">
@@ -81,7 +89,7 @@
     <input type="text" id="estado" placeholder="Estado">
     <input type="text" id="descripcion" placeholder="Descripción">
     <button onclick="agregarEnvio()">Agregar</button>
-    
+
     <h2>Envíos Registrados</h2>
     <table border="1" id="tabla-envios">
         <tr>
@@ -94,4 +102,5 @@
         </tr>
     </table>
 </body>
+
 </html>

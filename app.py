@@ -68,11 +68,25 @@ def update_envio(id):
     data = request.json
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("""UPDATE envios SET nombre=%s, direccion=%s, estado=%s, descripcion=%s 
-                      WHERE id=%s""", (data["nombre"], data["direccion"], data["estado"], data["descripcion"], id))
+
+    # Construcción dinámica del SQL según los datos recibidos
+    campos = []
+    valores = []
+    for campo, valor in data.items():
+        campos.append(f"{campo} = %s")
+        valores.append(valor)
+
+    if not campos:
+        return jsonify({"error": "No se enviaron datos para actualizar"}), 400
+
+    valores.append(id)
+    query = f"UPDATE envios SET {', '.join(campos)} WHERE id = %s"
+    
+    cursor.execute(query, valores)
     conn.commit()
     cursor.close()
     conn.close()
+    
     return jsonify({"message": "Envío actualizado correctamente"})
 
 @app.route('/delete/<int:id>', methods=['DELETE'])
