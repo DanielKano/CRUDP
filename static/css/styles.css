@@ -5,7 +5,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh; /* Para ocupar al menos toda la pantalla */
     margin: 0;
     padding: 20px;
 }
@@ -14,6 +14,7 @@ body {
 .container {
     width: 90%;
     max-width: 700px;
+    flex: 1; /* Permite que el contenido crezca sin empujar el footer */
 }
 
 /* Título */
@@ -107,7 +108,7 @@ td button:hover {
     background: white;
     border-top: 1px solid #ddd;
     width: 100%;
-    position: relative; /* Cambiar de 'fixed' a 'relative' */
+    position: absolute;
     bottom: 0;
 }
 
@@ -123,5 +124,9 @@ td button:hover {
 
     table {
         font-size: 14px;
+    }
+    .footer {
+        position: relative;
+        bottom: 0;
     }
 }
