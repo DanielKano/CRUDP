@@ -39,8 +39,6 @@ async function cargarEnvios() {
         }
 
         const tabla = document.getElementById("tabla-envios");
-
-        // Asegúrate de que la tabla no se duplique
         tabla.innerHTML = `
             <tr>
                 <th>ID</th>
