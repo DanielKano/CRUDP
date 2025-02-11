@@ -12,9 +12,10 @@ body {
 
 /* Contenedor principal */
 .container {
+    flex: 1;
     width: 90%;
     max-width: 700px;
-    flex: 1; /* Permite que el contenido crezca sin empujar el footer */
+    margin: auto;
 }
 
 /* Título */
@@ -108,8 +109,7 @@ td button:hover {
     background: white;
     border-top: 1px solid #ddd;
     width: 100%;
-    position: absolute;
-    bottom: 0;
+    position: relative; /* Cambiado de absolute a relative */
 }
 
 /* Responsividad */
