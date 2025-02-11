@@ -1,6 +1,7 @@
-document.addEventListener("DOMContentLoaded", cargarEnvios); // Cargar envíos al iniciar la página
+const API_URL = "https://crudp-fg68.onrender.com";  // Reemplaza con tu URL real
 
-// Función para agregar un nuevo envío
+document.addEventListener("DOMContentLoaded", cargarEnvios);
+
 async function agregarEnvio() {
     const nombre = document.getElementById("nombre").value;
     const direccion = document.getElementById("direccion").value;
@@ -12,7 +13,7 @@ async function agregarEnvio() {
         return;
     }
 
-    const respuesta = await fetch("/add", {
+    const respuesta = await fetch(`${API_URL}/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nombre, direccion, estado, descripcion })
@@ -20,27 +21,16 @@ async function agregarEnvio() {
 
     if (respuesta.ok) {
         alert("Envío agregado correctamente");
-        document.getElementById("nombre").value = "";
-        document.getElementById("direccion").value = "";
-        document.getElementById("estado").value = "";
-        document.getElementById("descripcion").value = "";
-        setTimeout(cargarEnvios, 500);  // Esperar 0.5 segundos antes de actualizar
+        cargarEnvios();
     } else {
         alert("Error al agregar el envío");
     }
 }
 
-// Función para cargar los envíos en la tabla
 async function cargarEnvios() {
     try {
-        const respuesta = await fetch("/users");
+        const respuesta = await fetch(`${API_URL}/envios`);
         const envios = await respuesta.json();
-        console.log("Datos recibidos:", envios); // Verificar si llegan datos
-        
-        if (!Array.isArray(envios) || envios.length === 0) {
-            console.warn("No hay datos disponibles.");
-            return;
-        }
 
         const tabla = document.getElementById("tabla-envios");
         tabla.innerHTML = "<tr><th>ID</th><th>Nombre</th><th>Dirección</th><th>Estado</th><th>Descripción</th><th>Acciones</th></tr>";
@@ -63,12 +53,10 @@ async function cargarEnvios() {
     }
 }
 
-
-// Función para eliminar un envío
 async function eliminarEnvio(id) {
     if (!confirm("¿Seguro que quieres eliminar este envío?")) return;
 
-    const respuesta = await fetch(`/delete/${id}`, {
+    const respuesta = await fetch(`${API_URL}/delete/${id}`, {
         method: "DELETE"
     });
 
@@ -80,11 +68,10 @@ async function eliminarEnvio(id) {
     }
 }
 
-// Función para actualizar un campo específico en la tabla
 async function actualizarEnvio(id, columna, valor) {
     const datos = { [columna]: valor };
 
-    const respuesta = await fetch(`/update/${id}`, {
+    const respuesta = await fetch(`${API_URL}/update/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(datos)
