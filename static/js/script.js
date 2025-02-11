@@ -29,23 +29,39 @@ async function agregarEnvio() {
 
 async function cargarEnvios() {
     try {
-        const respuesta = await fetch(`${API_URL}/envios`);
+        const respuesta = await fetch("/envios");
         const envios = await respuesta.json();
+        console.log("Datos recibidos:", envios);
+
+        if (!Array.isArray(envios) || envios.length === 0) {
+            console.warn("No hay datos disponibles.");
+            return;
+        }
 
         const tabla = document.getElementById("tabla-envios");
-        tabla.innerHTML = "<tr><th>ID</th><th>Nombre</th><th>Dirección</th><th>Estado</th><th>Descripción</th><th>Acciones</th></tr>";
+
+        // Asegúrate de que la tabla no se duplique
+        tabla.innerHTML = `
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Dirección</th>
+                <th>Estado</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+            </tr>`;
 
         envios.forEach(([id, nombre, direccion, estado, descripcion]) => {
-            const fila = `
-                <tr>
-                    <td>${id}</td>
-                    <td>${nombre}</td>
-                    <td>${direccion}</td>
-                    <td>${estado}</td>
-                    <td>${descripcion}</td>
-                    <td><button class="btn btn-danger" onclick="eliminarEnvio(${id})">Eliminar</button></td>
-                </tr>`;
-            tabla.innerHTML += fila;
+            const fila = document.createElement("tr");
+            fila.innerHTML = `
+                <td>${id}</td>
+                <td contenteditable="true" onblur="actualizarEnvio(${id}, 'nombre', this.innerText)">${nombre}</td>
+                <td contenteditable="true" onblur="actualizarEnvio(${id}, 'direccion', this.innerText)">${direccion}</td>
+                <td contenteditable="true" onblur="actualizarEnvio(${id}, 'estado', this.innerText)">${estado}</td>
+                <td contenteditable="true" onblur="actualizarEnvio(${id}, 'descripcion', this.innerText)">${descripcion}</td>
+                <td><button class="btn btn-danger" onclick="eliminarEnvio(${id})">Eliminar</button></td>
+            `;
+            tabla.appendChild(fila);
         });
 
     } catch (error) {
