@@ -5,102 +5,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRUD Logística de Envíos</title>
-    <script>
-        async function agregarEnvio() {
-            const nombre = document.getElementById("nombre").value;
-            const direccion = document.getElementById("direccion").value;
-            const estado = document.getElementById("estado").value;
-            const descripcion = document.getElementById("descripcion").value;
-
-            if (!nombre || !direccion || !estado || !descripcion) {
-                alert("Todos los campos son obligatorios");
-                return;
-            }
-
-            const respuesta = await fetch("/add", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ nombre, direccion, estado, descripcion })
-            });
-
-            if (respuesta.ok) {
-                alert("Envío agregado");
-                cargarEnvios();
-            } else {
-                alert("Error al agregar envío");
-            }
-        }
-
-        async function cargarEnvios() {
-            const respuesta = await fetch("/envios");
-            const envios = await respuesta.json();
-            const tabla = document.getElementById("tabla-envios");
-            tabla.innerHTML = "<tr><th>ID</th><th>Nombre</th><th>Dirección</th><th>Estado</th><th>Descripción</th><th>Acciones</th></tr>";
-
-            envios.forEach(([id, nombre, direccion, estado, descripcion]) => {
-                const fila = `<tr>
-                    <td>${id}</td>
-                    <td contenteditable="true" onBlur="actualizarEnvio(${id}, 'nombre', this.innerText)">${nombre}</td>
-                    <td contenteditable="true" onBlur="actualizarEnvio(${id}, 'direccion', this.innerText)">${direccion}</td>
-                    <td contenteditable="true" onBlur="actualizarEnvio(${id}, 'estado', this.innerText)">${estado}</td>
-                    <td contenteditable="true" onBlur="actualizarEnvio(${id}, 'descripcion', this.innerText)">${descripcion}</td>
-                    <td><button onclick="eliminarEnvio(${id})">Eliminar</button></td>
-                </tr>`;
-                tabla.innerHTML += fila;
-            });
-        }
-
-        async function actualizarEnvio(id, columna, valor) {
-            const datos = { [columna]: valor };
-
-            const respuesta = await fetch(`/update/${id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(datos)
-            });
-
-            if (respuesta.ok) {
-                alert("Envío actualizado correctamente");
-                cargarUsuarios();  // Recargar la tabla
-            } else {
-                alert("Error al actualizar");
-            }
-        }
-
-        async function eliminarEnvio(id) {
-            if (!confirm("¿Seguro que quieres eliminar este envío?")) return;
-            const respuesta = await fetch(`/delete/${id}`, { method: "DELETE" });
-            if (respuesta.ok) {
-                alert("Envío eliminado");
-                cargarEnvios();
-            } else {
-                alert("Error al eliminar");
-            }
-        }
-
-        window.onload = cargarEnvios;
-    </script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js"></script>
 </head>
 
 <body>
-    <h1>CRUD Logística de Envíos</h1>
-    <input type="text" id="nombre" placeholder="Nombre">
-    <input type="text" id="direccion" placeholder="Dirección">
-    <input type="text" id="estado" placeholder="Estado">
-    <input type="text" id="descripcion" placeholder="Descripción">
-    <button onclick="agregarEnvio()">Agregar</button>
-
-    <h2>Envíos Registrados</h2>
-    <table border="1" id="tabla-envios">
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Dirección</th>
-            <th>Estado</th>
-            <th>Descripción</th>
-            <th>Acciones</th>
-        </tr>
-    </table>
+    <div class="container">
+        <h2 class="title">Logistics</h2>
+        
+        <div class="card">
+            <form id="envioForm">
+                <div class="input-group">
+                    <input type="text" id="nombre" placeholder="Nombre">
+                    <input type="text" id="direccion" placeholder="Dirección">
+                    <input type="text" id="estado" placeholder="Estado">
+                    <input type="text" id="descripcion" placeholder="Descripción">
+                </div>
+                <button type="button" onclick="agregarEnvio()">Guardar</button>
+            </form>
+    
+            <table id="tabla-envios">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Dirección</th>
+                    <th>Estado</th>
+                    <th>Descripción</th>
+                    <th>Acciones</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <footer class="footer">
+        Daniel Cano
+    </footer>    
 </body>
 
 </html>
