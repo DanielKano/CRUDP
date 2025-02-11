@@ -80,3 +80,7 @@ async function eliminarEnvio(id) {
         alert("Error al eliminar");
     }
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    console.log("JavaScript cargado correctamente!");
+});

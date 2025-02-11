@@ -6,6 +6,10 @@ app = Flask(__name__)
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    return send_from_directory('static', filename)
+
 def get_db_connection():
     return psycopg2.connect(DATABASE_URL, sslmode="require")
 
