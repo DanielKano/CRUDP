@@ -35,27 +35,34 @@ async function cargarEnvios() {
     try {
         const respuesta = await fetch("/users");
         const envios = await respuesta.json();
-        const tabla = document.getElementById("tablaEnvios");
+        console.log("Datos recibidos:", envios); // Verificar si llegan datos
+        
+        if (!Array.isArray(envios) || envios.length === 0) {
+            console.warn("No hay datos disponibles.");
+            return;
+        }
+
+        const tabla = document.getElementById("tabla-envios");
         tabla.innerHTML = "<tr><th>ID</th><th>Nombre</th><th>Dirección</th><th>Estado</th><th>Descripción</th><th>Acciones</th></tr>";
 
         envios.forEach(([id, nombre, direccion, estado, descripcion]) => {
             const fila = `
                 <tr>
                     <td>${id}</td>
-                    <td><input type="text" class="form-control" value="${nombre}" onchange="actualizarEnvio(${id}, 'nombre', this.value)"></td>
-                    <td><input type="text" class="form-control" value="${direccion}" onchange="actualizarEnvio(${id}, 'direccion', this.value)"></td>
-                    <td><input type="text" class="form-control" value="${estado}" onchange="actualizarEnvio(${id}, 'estado', this.value)"></td>
-                    <td><input type="text" class="form-control" value="${descripcion}" onchange="actualizarEnvio(${id}, 'descripcion', this.value)"></td>
-                    <td>
-                        <button class="btn btn-danger btn-sm" onclick="eliminarEnvio(${id})">Eliminar</button>
-                    </td>
+                    <td>${nombre}</td>
+                    <td>${direccion}</td>
+                    <td>${estado}</td>
+                    <td>${descripcion}</td>
+                    <td><button class="btn btn-danger" onclick="eliminarEnvio(${id})">Eliminar</button></td>
                 </tr>`;
-            tabla.insertAdjacentHTML("beforeend", fila);
+            tabla.innerHTML += fila;
         });
+
     } catch (error) {
-        console.error("Error al cargar envíos:", error);
+        console.error("Error al cargar los envíos:", error);
     }
 }
+
 
 // Función para eliminar un envío
 async function eliminarEnvio(id) {
