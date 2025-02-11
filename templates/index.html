@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRUD Logística de Envíos</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
-    <script src="/static/js/script.js"></script>
-
+    <link rel="stylesheet" href="/static/css/styles.css?v=1">
+    <script defer src="/static/js/script.js"></script>
 </head>
-
 <body>
+
     <div class="container">
-        <h2 class="title">Logistics</h2>
-        
+        <h2 class="title">Logística de Envíos</h2>
+
         <div class="card">
             <form id="envioForm">
                 <div class="input-group">
@@ -24,22 +22,28 @@
                 </div>
                 <button type="button" onclick="agregarEnvio()">Guardar</button>
             </form>
-    
-            <table id="tabla-envios">
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Dirección</th>
-                    <th>Estado</th>
-                    <th>Descripción</th>
-                    <th>Acciones</th>
-                </tr>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Dirección</th>
+                        <th>Estado</th>
+                        <th>Descripción</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaEnvios">
+                    <!-- Aquí se llenarán los datos dinámicamente -->
+                </tbody>
             </table>
         </div>
     </div>
-    <footer class="footer">
-        Daniel Cano
-    </footer>    
-</body>
 
+    <footer class="footer">
+        <p>&copy; 2025 - Daniel Cano</p>
+    </footer>
+
+</body>
 </html>
